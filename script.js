@@ -1,10 +1,11 @@
-// Survivor stats (top cards)
+// Survivor stats (top cards) with colored gradients
 const survivorStats = [
   {
     title: 'Survivors detected',
     value: 47,
     change: 8,
     unit: 'active',
+    color: 'linear-gradient(135deg, #10b981, #059669)',
     logo: `
       <svg viewBox="0 0 64 64" class="stat-logo" aria-hidden="true">
         <defs>
@@ -13,9 +14,9 @@ const survivorStats = [
             <stop offset="100%" stop-color="#059669" />
           </linearGradient>
         </defs>
-        ircle cx="32" cy="20" r="8" fill="url(#survivorGrad)" />
+        <circle cx="32" cy="20" r="8" fill="url(#survivorGrad)" />
         <path d="M20 44c0-6.6 5.4-12 12-12s12 5.4 12 12v8H20v-8z" fill="url(#survivorGrad)" />
-        ircle cx="32" cy="32" r="20" fill="none" stroke="url(#survivorGrad)" stroke-width="2" stroke-dasharray="4,4" opacity="0.6" />
+        <circle cx="32" cy="32" r="20" fill="none" stroke="url(#survivorGrad)" stroke-width="2" stroke-dasharray="4,4" opacity="0.6" />
       </svg>
     `
   },
@@ -24,6 +25,7 @@ const survivorStats = [
     value: 23,
     change: 5,
     unit: 'channels',
+    color: 'linear-gradient(135deg, #ef4444, #dc2626)',
     logo: `
       <svg viewBox="0 0 64 64" class="stat-logo" aria-hidden="true">
         <defs>
@@ -42,6 +44,7 @@ const survivorStats = [
     value: 420,
     change: -15,
     unit: 'ppm',
+    color: 'linear-gradient(135deg, #f59e0b, #d97706)',
     logo: `
       <svg viewBox="0 0 64 64" class="stat-logo" aria-hidden="true">
         <defs>
@@ -50,9 +53,9 @@ const survivorStats = [
             <stop offset="100%" stop-color="#d97706" />
           </linearGradient>
         </defs>
-        ircle cx="32" cy="32" r="24" fill="url(#gasGrad)" opacity="0.3" />
-        ircle cx="32" cy="32" r="16" fill="url(#gasGrad)" opacity="0.5" />
-        ircle cx="32" cy="32" r="8" fill="url(#gasGrad)" />
+        <circle cx="32" cy="32" r="24" fill="url(#gasGrad)" opacity="0.3" />
+        <circle cx="32" cy="32" r="16" fill="url(#gasGrad)" opacity="0.5" />
+        <circle cx="32" cy="32" r="8" fill="url(#gasGrad)" />
         <path d="M20 20c4-4 8-4 12 0s8 4 12 0" fill="none" stroke="url(#gasGrad)" stroke-width="2" opacity="0.7" />
         <path d="M20 44c4-4 8-4 12 0s8 4 12 0" fill="none" stroke="url(#gasGrad)" stroke-width="2" opacity="0.7" />
       </svg>
@@ -63,6 +66,7 @@ const survivorStats = [
     value: 156,
     change: 12,
     unit: 'sources',
+    color: 'linear-gradient(135deg, #f97316, #ef4444, #dc2626)',
     logo: `
       <svg viewBox="0 0 64 64" class="stat-logo" aria-hidden="true">
         <defs>
@@ -72,10 +76,10 @@ const survivorStats = [
             <stop offset="100%" stop-color="#dc2626" />
           </linearGradient>
         </defs>
-        ircle cx="32" cy="32" r="6" fill="url(#thermalGrad)" />
-        ircle cx="32" cy="32" r="12" fill="none" stroke="url(#thermalGrad)" stroke-width="2" opacity="0.6" />
-        ircle cx="32" cy="32" r="18" fill="none" stroke="url(#thermalGrad)" stroke-width="1" opacity="0.4" />
-        ircle cx="32" cy="32" r="24" fill="none" stroke="url(#thermalGrad)" stroke-width="1" opacity="0.2" />
+        <circle cx="32" cy="32" r="6" fill="url(#thermalGrad)" />
+        <circle cx="32" cy="32" r="12" fill="none" stroke="url(#thermalGrad)" stroke-width="2" opacity="0.6" />
+        <circle cx="32" cy="32" r="18" fill="none" stroke="url(#thermalGrad)" stroke-width="1" opacity="0.4" />
+        <circle cx="32" cy="32" r="24" fill="none" stroke="url(#thermalGrad)" stroke-width="1" opacity="0.2" />
         <path d="M32 8v8M32 48v8M8 32h8M48 32h8" stroke="url(#thermalGrad)" stroke-width="2" opacity="0.8" />
       </svg>
     `
@@ -85,6 +89,7 @@ const survivorStats = [
     value: 34,
     change: 6,
     unit: 'signals',
+    color: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
     logo: `
       <svg viewBox="0 0 64 64" class="stat-logo" aria-hidden="true">
         <defs>
@@ -96,7 +101,7 @@ const survivorStats = [
         <path d="M20 24v16l8-4v-8l-8-4z" fill="url(#acousticGrad)" />
         <path d="M32 20c0 0 8 4 8 12s-8 12-8 12" fill="none" stroke="url(#acousticGrad)" stroke-width="3" />
         <path d="M36 16c0 0 12 6 12 16s-12 16-12 16" fill="none" stroke="url(#acousticGrad)" stroke-width="2" opacity="0.7" />
-        ircle cx="32" cy="32" r="20" fill="none" stroke="url(#acousticGrad)" stroke-width="1" stroke-dasharray="2,2" opacity="0.4" />
+        <circle cx="32" cy="32" r="20" fill="none" stroke="url(#acousticGrad)" stroke-width="1" stroke-dasharray="2,2" opacity="0.4" />
       </svg>
     `
   },
@@ -105,6 +110,7 @@ const survivorStats = [
     value: 89,
     change: 4,
     unit: 'cavities',
+    color: 'linear-gradient(135deg, #06b6d4, #0891b2)',
     logo: `
       <svg viewBox="0 0 64 64" class="stat-logo" aria-hidden="true">
         <defs>
@@ -114,12 +120,12 @@ const survivorStats = [
           </linearGradient>
         </defs>
         <rect x="8" y="8" width="48" height="48" fill="none" stroke="url(#voidGrad)" stroke-width="2" />
-        ircle cx="32" cy="32" r="12" fill="none" stroke="url(#voidGrad)" stroke-width="2" stroke-dasharray="4,4" />
+        <circle cx="32" cy="32" r="12" fill="none" stroke="url(#voidGrad)" stroke-width="2" stroke-dasharray="4,4" />
         <path d="M16 16l32 32M48 16L16 48" stroke="url(#voidGrad)" stroke-width="1" opacity="0.5" />
-        ircle cx="20" cy="20" r="2" fill="url(#voidGrad)" opacity="0.8" />
-        ircle cx="44" cy="20" r="2" fill="url(#voidGrad)" opacity="0.8" />
-        ircle cx="20" cy="44" r="2" fill="url(#voidGrad)" opacity="0.8" />
-        ircle cx="44" cy="44" r="2" fill="url(#voidGrad)" opacity="0.8" />
+        <circle cx="20" cy="20" r="2" fill="url(#voidGrad)" opacity="0.8" />
+        <circle cx="44" cy="20" r="2" fill="url(#voidGrad)" opacity="0.8" />
+        <circle cx="20" cy="44" r="2" fill="url(#voidGrad)" opacity="0.8" />
+        <circle cx="44" cy="44" r="2" fill="url(#voidGrad)" opacity="0.8" />
       </svg>
     `
   },
@@ -128,6 +134,7 @@ const survivorStats = [
     value: 73,
     change: -5,
     unit: '% risk',
+    color: 'linear-gradient(135deg, #ef4444, #dc2626)',
     logo: `
       <svg viewBox="0 0 64 64" class="stat-logo" aria-hidden="true">
         <defs>
@@ -138,7 +145,7 @@ const survivorStats = [
         </defs>
         <path d="M32 8L8 56h48L32 8z" fill="url(#riskGrad)" />
         <path d="M32 20v16M32 40v4" stroke="white" stroke-width="3" stroke-linecap="round" />
-        ircle cx="32" cy="32" r="28" fill="none" stroke="url(#riskGrad)" stroke-width="2" stroke-dasharray="6,6" opacity="0.4" />
+        <circle cx="32" cy="32" r="28" fill="none" stroke="url(#riskGrad)" stroke-width="2" stroke-dasharray="6,6" opacity="0.4" />
       </svg>
     `
   },
@@ -147,6 +154,7 @@ const survivorStats = [
     value: 28,
     change: 3,
     unit: 'identified',
+    color: 'linear-gradient(135deg, #ec4899, #be185d)',
     logo: `
       <svg viewBox="0 0 64 64" class="stat-logo" aria-hidden="true">
         <defs>
@@ -155,21 +163,13 @@ const survivorStats = [
             <stop offset="100%" stop-color="#be185d" />
           </linearGradient>
         </defs>
-        ircle cx="32" cy="32" r="20" fill="url(#hazardGrad)" />
+        <circle cx="32" cy="32" r="20" fill="url(#hazardGrad)" />
         <path d="M32 16v32M16 32h32" stroke="white" stroke-width="4" />
-        ircle cx="32" cy="32" r="24" fill="none" stroke="url(#hazardGrad)" stroke-width="2" stroke-dasharray="8,4" opacity="0.6" />
+        <circle cx="32" cy="32" r="24" fill="none" stroke="url(#hazardGrad)" stroke-width="2" stroke-dasharray="8,4" opacity="0.6" />
         <path d="M20 20l24 24M44 20L20 44" stroke="url(#hazardGrad)" stroke-width="1" opacity="0.5" />
       </svg>
     `
   }
-];
-
-// Robot markers for live tracking
-const robotData = [
-  { id: 'alpha-7', name: 'Alpha‑7', status: 'active', x: 28, y: 36 },
-  { id: 'bravo-3', name: 'Bravo‑3', status: 'idle', x: 44, y: 24 },
-  { id: 'charlie-9', name: 'Charlie‑9', status: 'emergency', x: 64, y: 46 },
-  { id: 'delta-5', name: 'Delta‑5', status: 'active', x: 36, y: 64 }
 ];
 
 // System performance metrics
@@ -203,6 +203,91 @@ const performanceData = [
   { time: '20:00', productivity: 70, success: 75, response: 80 }
 ];
 
+// Map instances and data
+let humanMapInstance = null;
+let sensorMapInstance = null;
+let userLocationMarker = null;
+let userLocation = null;
+
+// Static detection data
+const staticHumanData = [
+  { type: 'survivor', name: 'Survivor A', description: 'Strong vital signs detected' },
+  { type: 'survivor', name: 'Survivor B', description: 'Weak signals, needs attention' },
+  { type: 'survivor', name: 'Survivor C', description: 'Trapped in rubble' },
+  { type: 'survivor', name: 'Survivor D', description: 'Multiple injuries detected' },
+  { type: 'personnel', name: 'Team Alpha', description: 'Rescue team, 4 members' },
+  { type: 'personnel', name: 'Team Bravo', description: 'Medical team, 3 members' },
+  { type: 'personnel', name: 'Medic Unit', description: 'Mobile medical station' },
+  { type: 'personnel', name: 'Engineer Unit', description: 'Structural assessment team' }
+];
+
+const staticSensorData = [
+  { 
+    type: 'thermal', 
+    name: 'Heat Source A', 
+    value: '45°C', 
+    description: 'High temperature anomaly',
+    page: 'thermal-details.html'
+  },
+  { 
+    type: 'thermal', 
+    name: 'Heat Source B', 
+    value: '52°C', 
+    description: 'Potential fire hazard',
+    page: 'thermal-details.html'
+  },
+  { 
+    type: 'thermal', 
+    name: 'Heat Source C', 
+    value: '38°C', 
+    description: 'Body heat signature',
+    page: 'thermal-details.html'
+  },
+  { 
+    type: 'gas', 
+    name: 'Gas Sensor A', 
+    value: '420 ppm', 
+    description: 'CO₂ levels elevated',
+    page: 'gas-details.html'
+  },
+  { 
+    type: 'gas', 
+    name: 'Gas Sensor B', 
+    value: '150 ppm', 
+    description: 'CO levels normal',
+    page: 'gas-details.html'
+  },
+  { 
+    type: 'gas', 
+    name: 'Gas Sensor C', 
+    value: '80 ppm', 
+    description: 'Methane detected',
+    page: 'gas-details.html'
+  },
+  { 
+    type: 'acoustic', 
+    name: 'Audio Sensor A', 
+    value: '65 dB', 
+    description: 'Voice patterns detected',
+    page: 'acoustic-details.html'
+  },
+  { 
+    type: 'acoustic', 
+    name: 'Audio Sensor B', 
+    value: '72 dB', 
+    description: 'Structural creaking',
+    page: 'acoustic-details.html'
+  },
+  { 
+    type: 'acoustic', 
+    name: 'Audio Sensor C', 
+    value: '58 dB', 
+    description: 'Faint tapping sounds',
+    page: 'acoustic-details.html'
+  }
+];
+
+// Core functions
 function createStatCard(stat, index) {
   const changeClass = stat.change >= 0 ? 'change-positive' : 'change-negative';
   const changeSymbol = stat.change > 0 ? '+' : '';
@@ -210,7 +295,7 @@ function createStatCard(stat, index) {
   return `
     <article class="stat-card" style="animation-delay: ${(index + 1) * 0.06}s">
       <div class="card-header">
-        <div class="logo-container">
+        <div class="logo-container" style="background: ${stat.color}">
           ${stat.logo}
         </div>
         <span class="change-indicator ${changeClass}">
@@ -239,23 +324,6 @@ function updateStats() {
     stat.change = randomChange;
   });
   renderStats();
-}
-
-function createRobotMarkers() {
-  const container = document.getElementById('robotMarkers');
-  if (!container) return;
-  container.innerHTML = robotData
-    .map(
-      (robot) => `
-    <button
-      type="button"
-      class="robot-marker ${robot.status}"
-      style="left:${robot.x}%; top:${robot.y}%;"
-      title="${robot.name} – ${robot.status}"
-    ></button>
-  `
-    )
-    .join('');
 }
 
 function createPerformanceMetrics() {
@@ -421,41 +489,394 @@ function initializeAIAssistant() {
   });
 }
 
-function initializeRadarSweep() {
-  const sweep = document.getElementById('radarSweep');
-  if (!sweep) return;
-  let angle = 0;
-  setInterval(() => {
-    angle = (angle + 2) % 360;
-    sweep.style.transform = `rotate(${angle}deg)`;
-  }, 50);
+// Map initialization and management
+function initializeMaps() {
+  const locationStatus = document.getElementById('locationStatus');
+  
+  if (!navigator.geolocation) {
+    locationStatus.textContent = 'Geolocation not supported';
+    locationStatus.style.color = '#ef4444';
+    locationStatus.style.background = 'rgba(239, 68, 68, 0.1)';
+    return;
+  }
+
+  locationStatus.textContent = 'Requesting location...';
+  locationStatus.style.color = '#f59e0b';
+  locationStatus.style.background = 'rgba(245, 158, 11, 0.1)';
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const userLat = position.coords.latitude;
+      const userLng = position.coords.longitude;
+      userLocation = { lat: userLat, lng: userLng };
+      
+      locationStatus.textContent = 'Location acquired ✓';
+      locationStatus.style.color = '#10b981';
+      locationStatus.style.background = 'rgba(16, 185, 129, 0.1)';
+      
+      // Initialize human detection map
+      initializeHumanMap(userLat, userLng);
+      
+      // Initialize sensor detection map
+      initializeSensorMap(userLat, userLng);
+      
+      // Add user location to both maps
+      addUserLocationMarker(userLat, userLng);
+      
+      // Add static human detection markers
+      addStaticHumanMarkers(userLat, userLng);
+      
+      // Add static sensor markers
+      addStaticSensorMarkers(userLat, userLng);
+      
+      // Update counters
+      updateDetectionCounters();
+    },
+    (error) => {
+      console.error('Geolocation error:', error);
+      locationStatus.textContent = 'Location denied';
+      locationStatus.style.color = '#ef4444';
+      locationStatus.style.background = 'rgba(239, 68, 68, 0.1)';
+      
+      // Fallback to default location (New York)
+      const fallbackLat = 40.7128;
+      const fallbackLng = -74.0060;
+      userLocation = { lat: fallbackLat, lng: fallbackLng };
+      
+      setTimeout(() => {
+        initializeHumanMap(fallbackLat, fallbackLng);
+        initializeSensorMap(fallbackLat, fallbackLng);
+        addUserLocationMarker(fallbackLat, fallbackLng);
+        addStaticHumanMarkers(fallbackLat, fallbackLng);
+        addStaticSensorMarkers(fallbackLat, fallbackLng);
+        updateDetectionCounters();
+        
+        locationStatus.textContent = 'Using default location';
+        locationStatus.style.color = '#f59e0b';
+        locationStatus.style.background = 'rgba(245, 158, 11, 0.1)';
+      }, 1000);
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
+    }
+  );
 }
 
+function initializeHumanMap(lat, lng) {
+  humanMapInstance = L.map('humanMap').setView([lat, lng], 15);
+  
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap contributors, © CARTO',
+    maxZoom: 19,
+    opacity: 0.8
+  }).addTo(humanMapInstance);
+  
+  // Add scale control
+  L.control.scale({ imperial: false }).addTo(humanMapInstance);
+}
+
+function initializeSensorMap(lat, lng) {
+  sensorMapInstance = L.map('sensorMap').setView([lat, lng], 15);
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+    maxZoom: 19
+  }).addTo(sensorMapInstance);
+  
+  // Add scale control
+  L.control.scale({ imperial: false }).addTo(sensorMapInstance);
+}
+
+function addUserLocationMarker(lat, lng) {
+  // Create prominent blue dot for user location
+  const userIcon = L.divIcon({
+    className: 'custom-marker user-location-marker',
+    html: `
+      <div class="blue-dot-container">
+        <div class="blue-dot-pulse"></div>
+        <div class="blue-dot-core">
+          <div class="blue-dot-inner"></div>
+        </div>
+      </div>
+    `,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12]
+  });
+  
+  // Add to human map
+  userLocationMarker = L.marker([lat, lng], { icon: userIcon })
+    .addTo(humanMapInstance)
+    .bindPopup('<strong>Your Location</strong><br>Command center position')
+    .openPopup();
+  
+  // Add to sensor map
+  L.marker([lat, lng], { icon: userIcon })
+    .addTo(sensorMapInstance)
+    .bindPopup('<strong>Your Location</strong><br>Command center position');
+}
+
+function addStaticHumanMarkers(baseLat, baseLng) {
+  const humanMarkers = [];
+  
+  staticHumanData.forEach((human, index) => {
+    // Generate random offsets (within ~500m radius)
+    const latOffset = (Math.random() - 0.5) * 0.01;
+    const lngOffset = (Math.random() - 0.5) * 0.01;
+    
+    const lat = baseLat + latOffset;
+    const lng = baseLng + lngOffset;
+    
+    const color = human.type === 'survivor' ? '#10b981' : '#2563eb';
+    
+    const markerIcon = L.divIcon({
+      className: 'custom-marker human-marker',
+      html: `
+        <div style="
+          width: ${human.type === 'survivor' ? '14px' : '12px'};
+          height: ${human.type === 'survivor' ? '14px' : '12px'};
+          background: ${color};
+          border: 2px solid white;
+          border-radius: 50%;
+          box-shadow: 0 0 8px ${color}80;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 8px;
+          color: white;
+          font-weight: bold;
+          cursor: pointer;
+        ">
+          ${human.type === 'survivor' ? 'S' : 'P'}
+        </div>
+      `,
+      iconSize: [human.type === 'survivor' ? 14 : 12, human.type === 'survivor' ? 14 : 12],
+      iconAnchor: [human.type === 'survivor' ? 7 : 6, human.type === 'survivor' ? 7 : 6]
+    });
+    
+    const marker = L.marker([lat, lng], { icon: markerIcon })
+      .addTo(humanMapInstance)
+      .bindPopup(`
+        <div style="font-size: 12px;">
+          <strong>${human.name}</strong><br>
+          Type: ${human.type === 'survivor' ? 'Survivor' : 'Personnel'}<br>
+          Status: Active<br>
+          ${human.description}
+        </div>
+      `);
+    
+    humanMarkers.push(marker);
+  });
+  
+  return humanMarkers;
+}
+
+function addStaticSensorMarkers(baseLat, baseLng) {
+  const sensorMarkers = [];
+  
+  staticSensorData.forEach((sensor, index) => {
+    // Generate random offsets (within ~500m radius)
+    const latOffset = (Math.random() - 0.5) * 0.01;
+    const lngOffset = (Math.random() - 0.5) * 0.01;
+    
+    const lat = baseLat + latOffset;
+    const lng = baseLng + lngOffset;
+    
+    let color, symbol;
+    if (sensor.type === 'thermal') {
+      color = '#ef4444';
+      symbol = '🔥';
+    } else if (sensor.type === 'gas') {
+      color = '#d97706';
+      symbol = '💨';
+    } else {
+      color = '#7c3aed';
+      symbol = '🔊';
+    }
+    
+    const markerIcon = L.divIcon({
+      className: 'custom-marker sensor-marker',
+      html: `
+        <div style="
+          width: 14px;
+          height: 14px;
+          background: ${color};
+          border: 2px solid white;
+          border-radius: 50%;
+          box-shadow: 0 0 8px ${color}80;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 7px;
+          color: white;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        ">
+          ${sensor.type === 'thermal' ? 'T' : sensor.type === 'gas' ? 'G' : 'A'}
+        </div>
+      `,
+      iconSize: [14, 14],
+      iconAnchor: [7, 7]
+    });
+    
+    const marker = L.marker([lat, lng], { icon: markerIcon })
+      .addTo(sensorMapInstance)
+      .bindPopup(`
+        <div style="font-size: 12px; max-width: 200px;">
+          <strong>${sensor.name}</strong><br>
+          Type: ${sensor.type.charAt(0).toUpperCase() + sensor.type.slice(1)} Sensor<br>
+          Reading: ${sensor.value}<br>
+          ${sensor.description}<br>
+          <button onclick="window.open('${sensor.page}', '_blank')" 
+                  style="
+                    background: ${color};
+                    color: white;
+                    border: none;
+                    padding: 4px 12px;
+                    border-radius: 4px;
+                    margin-top: 8px;
+                    cursor: pointer;
+                    font-size: 11px;
+                  ">
+            View Details →
+          </button>
+        </div>
+      `);
+    
+    // Add click event to open sensor page
+    marker.on('click', function() {
+      window.open(sensor.page, '_blank');
+    });
+    
+    sensorMarkers.push(marker);
+  });
+  
+  return sensorMarkers;
+}
+
+function updateDetectionCounters() {
+  const humanCountElement = document.getElementById('humanCount');
+  const sensorCountElement = document.getElementById('sensorCount');
+  
+  if (humanCountElement) {
+    humanCountElement.textContent = `${staticHumanData.length} detected`;
+  }
+  
+  if (sensorCountElement) {
+    sensorCountElement.textContent = `${staticSensorData.length} active`;
+  }
+}
+
+function refreshUserLocation() {
+  if (!navigator.geolocation) return;
+  
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const newLat = position.coords.latitude;
+      const newLng = position.coords.longitude;
+      
+      if (userLocation && 
+          Math.abs(userLocation.lat - newLat) < 0.0001 && 
+          Math.abs(userLocation.lng - newLng) < 0.0001) {
+        return; // Location hasn't changed significantly
+      }
+      
+      userLocation = { lat: newLat, lng: newLng };
+      
+      // Update map views
+      if (humanMapInstance) {
+        humanMapInstance.setView([newLat, newLng], humanMapInstance.getZoom());
+      }
+      
+      if (sensorMapInstance) {
+        sensorMapInstance.setView([newLat, newLng], sensorMapInstance.getZoom());
+      }
+      
+      // Update status
+      const locationStatus = document.getElementById('locationStatus');
+      if (locationStatus) {
+        locationStatus.textContent = 'Location updated ✓';
+        setTimeout(() => {
+          locationStatus.textContent = 'Location acquired ✓';
+        }, 2000);
+      }
+    },
+    (error) => {
+      console.error('Error refreshing location:', error);
+    }
+  );
+}
+
+// Dropdown functionality
+function initializeDevicesDropdown() {
+  const dropdownToggle = document.querySelector('.dropdown-toggle');
+  const dropdownMenu = document.querySelector('.dropdown-menu');
+  
+  if (!dropdownToggle || !dropdownMenu) return;
+  
+  dropdownToggle.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const isExpanded = this.getAttribute('aria-expanded') === 'true';
+    this.setAttribute('aria-expanded', !isExpanded);
+    dropdownMenu.classList.toggle('show');
+  });
+  
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!dropdownToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+      dropdownToggle.setAttribute('aria-expanded', 'false');
+      dropdownMenu.classList.remove('show');
+    }
+  });
+  
+  // Handle device selection
+  const dropdownItems = dropdownMenu.querySelectorAll('.dropdown-item');
+  dropdownItems.forEach(item => {
+    item.addEventListener('click', function(e) {
+      if (!this.querySelector('.dropdown-icon')) {
+        const deviceName = this.querySelector('span').textContent;
+        console.log(`Selected device: ${deviceName}`);
+        // Here you would typically update the UI or fetch device data
+        dropdownToggle.setAttribute('aria-expanded', 'false');
+        dropdownMenu.classList.remove('show');
+      }
+    });
+  });
+}
+
+// Main initialization
 document.addEventListener('DOMContentLoaded', () => {
   renderStats();
-  createRobotMarkers();
   createPerformanceMetrics();
-
+  
   setTimeout(() => {
     drawOperationsChart();
     drawPerformanceChart();
   }, 120);
-
+  
   initializeAIAssistant();
-  initializeRadarSweep();
-
+  initializeMaps();
+  initializeDevicesDropdown();
+  
+  // Set up periodic updates
   setInterval(updateStats, 30000);
   setInterval(() => {
     drawOperationsChart();
     drawPerformanceChart();
   }, 60000);
+  
+  // Refresh user location every 30 seconds
+  setInterval(refreshUserLocation, 30000);
 });
 
-// Export hook for debugging in dev tools
+// Export for debugging
 window.HAWKVEGADashboard = {
   survivorStats,
-  robotData,
   performanceMetrics,
+  staticHumanData,
+  staticSensorData,
   updateStats,
-  renderStats
+  renderStats,
+  refreshUserLocation
 };
