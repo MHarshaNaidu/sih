@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HAWK‑VEGA Command Center</title>
+  <title>VEGA Command Center</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -11,7 +14,7 @@
   <header class="header">
     <div class="container">
       <div class="header-content">
-        <!-- Left: HAWK logo -->
+        <!-- Left:logo -->
         <div class="logo-section">
           <div class="hawk-logo">
             <svg viewBox="0 0 64 64" class="logo-icon" aria-hidden="true">
@@ -22,11 +25,11 @@
                 </linearGradient>
               </defs>
               <path d="M32 8L8 32l24 24 24-24L32 8z" fill="url(#hawkGrad)" />
-              <rcle cx="32" cy="32" r="20" fill="none" stroke="url(#hawkGrad)" stroke-width="2" stroke-dasharray="4,4" opacity="0.6" />
+              <circle cx="32" cy="32" r="20" fill="none" stroke="url(#hawkGrad)" stroke-width="2" stroke-dasharray="4,4" opacity="0.6" />
             </svg>
           </div>
           <div class="brand-block">
-            <div class="brand-text">HAWK‑VEGA</div>
+            <div class="brand-text">VEGA</div>
             <div class="brand-sub">Robotic Command Center</div>
           </div>
         </div>
@@ -37,14 +40,56 @@
           <div class="title-underline"></div>
         </div>
 
-        <!-- Right: controls -->
+        <!-- Right: controls with dropdown -->
         <nav class="nav-section" aria-label="Top navigation">
-          <button class="nav-button" type="button">
-            <span>Devices</span>
-            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="6,9 12,15 18,9"></polyline>
-            </svg>
-          </button>
+          <div class="dropdown">
+            <button class="nav-button dropdown-toggle" type="button" id="devicesDropdown" aria-expanded="false">
+              <span>Devices</span>
+              <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6,9 12,15 18,9"></polyline>
+              </svg>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="devicesDropdown">
+              <div class="dropdown-header">Active Units</div>
+              <div class="dropdown-item">
+                <div class="device-status active"></div>
+                <span>ALPHA-7</span>
+                <span class="device-sub">Search & Rescue</span>
+              </div>
+              <div class="dropdown-item">
+                <div class="device-status active"></div>
+                <span>BRAVO-3</span>
+                <span class="device-sub">Structural Scan</span>
+              </div>
+              <div class="dropdown-item">
+                <div class="device-status warning"></div>
+                <span>CHARLIE-9</span>
+                <span class="device-sub">Thermal Imaging</span>
+              </div>
+              <div class="dropdown-item">
+                <div class="device-status active"></div>
+                <span>DELTA-5</span>
+                <span class="device-sub">Gas Detection</span>
+              </div>
+              <div class="dropdown-item">
+                <div class="device-status idle"></div>
+                <span>ECHO-2</span>
+                <span class="device-sub">Acoustic Monitor</span>
+              </div>
+              <div class="dropdown-item">
+                <div class="device-status active"></div>
+                <span>FOXTROT-8</span>
+                <span class="device-sub">Surveillance</span>
+              </div>
+              <div class="dropdown-divider"></div>
+              <div class="dropdown-item">
+                <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 5v14M5 12h14"></path>
+                </svg>
+                <span>Add New Device</span>
+              </div>
+            </div>
+          </div>
 
           <button class="icon-button" type="button" aria-label="Notifications">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -55,7 +100,7 @@
 
           <button class="icon-button" type="button" aria-label="Settings">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rcle cx="12" cy="12" r="3"></circle>
+              <circle cx="12" cy="12" r="3"></circle>
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33A1.65 1.65 0 0 0 14 21v.09A2 2 0 0 1 12 23a2 2 0 0 1-2-1.91V21a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15 1.65 1.65 0 0 0 3.09 14H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 8.12 5H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09A1.65 1.65 0 0 0 15 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9 1.65 1.65 0 0 0 20.91 10H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09A1.65 1.65 0 0 0 19.4 15z"></path>
             </svg>
           </button>
@@ -78,9 +123,9 @@
                   <stop offset="100%" stop-color="#06b6d4" />
                 </linearGradient>
               </defs>
-              <rcle cx="32" cy="20" r="8" fill="url(#sectionGrad)" />
+              <circle cx="32" cy="20" r="8" fill="url(#sectionGrad)" />
               <path d="M20 44c0-6.6 5.4-12 12-12s12 5.4 12 12v8H20v-8z" fill="url(#sectionGrad)" />
-              <rcle cx="32" cy="32" r="20" fill="none" stroke="url(#sectionGrad)" stroke-width="2" stroke-dasharray="4,4" opacity="0.6" />
+              <circle cx="32" cy="32" r="20" fill="none" stroke="url(#sectionGrad)" stroke-width="2" stroke-dasharray="4,4" opacity="0.6" />
             </svg>
           </div>
           <div>
@@ -93,46 +138,82 @@
 
       <!-- Live Robot Tracking -->
       <section class="section" aria-labelledby="tracking-title">
-        <div class="live-map-container">
-          <div class="map-header">
-            <div>
-              <h2 class="map-title" id="tracking-title">Live Robot Tracking</h2>
-              <p class="map-subtitle">Current HAWK unit positions in the active mission zone</p>
+        <div class="section-header">
+          <div class="section-logo">
+            <svg viewBox="0 0 64 64" class="section-icon" aria-hidden="true">
+              <defs>
+                <linearGradient id="mapGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#10b981" />
+                  <stop offset="100%" stop-color="#06b6d4" />
+                </linearGradient>
+              </defs>
+              <circle cx="32" cy="32" r="20" fill="url(#mapGrad)" opacity="0.3" />
+              <circle cx="32" cy="32" r="4" fill="url(#mapGrad)" />
+              <circle cx="32" cy="32" r="12" fill="none" stroke="url(#mapGrad)" stroke-width="2" stroke-dasharray="4,4" opacity="0.6" />
+            </svg>
+          </div>
+          <div>
+            <h2 class="section-title" id="tracking-title">Live Robot Tracking</h2>
+            <p class="section-subtitle">Real-time location with human and sensor detection zones</p>
+          </div>
+          <div class="live-indicator">
+            <div class="pulse-dot"></div>
+            <span>LIVE</span>
+            <div class="quantum-badge" id="locationStatus">Requesting location...</div>
+          </div>
+        </div>
+
+        <div class="dual-map-container">
+          <!-- Human Detection Map -->
+          <div class="map-panel">
+            <div class="map-panel-header">
+              <h3 class="map-panel-title">Human Detection</h3>
+              <p class="map-panel-subtitle">Survivors and personnel detected</p>
             </div>
-            <div class="live-indicator">
-              <div class="pulse-dot"></div>
-              <span>LIVE</span>
-              <div class="quantum-badge">Sync OK • 0.4s delay</div>
+            <div class="map-display" id="humanMap"></div>
+            <div class="map-legend">
+              <div class="legend-left">
+                <div class="legend-item">
+                  <div class="legend-dot survivor"></div>
+                  <span>Survivors</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-dot personnel"></div>
+                  <span>Personnel</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-dot user-location"></div>
+                  <span>Your Location</span>
+                </div>
+              </div>
+              <div class="legend-status" id="humanCount">0 detected</div>
             </div>
           </div>
 
-          <div class="map-content">
-            <div class="map-backgrou nd"></div>
-            <div class="radar-container">
-              <div class="radar-sweep" id="radarSweep"></div>
-              <div class="radar-circle radar-1"></div>
-              <div class="radar-circle radar-2"></div>
-              <div class="radar-circle radar-3"></div>
+          <!-- Sensor Detection Map -->
+          <div class="map-panel">
+            <div class="map-panel-header">
+              <h3 class="map-panel-title">Sensor Detection</h3>
+              <p class="map-panel-subtitle">Environmental and structural sensors</p>
             </div>
-            <div class="robot-markers" id="robotMarkers"></div>
-          </div>
-
-          <div class="map-legend">
-            <div class="legend-left">
-              <div class="legend-item">
-                <div class="legend-dot active"></div>
-                <span>Active</span>
+            <div class="map-display" id="sensorMap"></div>
+            <div class="map-legend">
+              <div class="legend-left">
+                <div class="legend-item">
+                  <div class="legend-dot thermal"></div>
+                  <span>Thermal</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-dot gas"></div>
+                  <span>Gas</span>
+                </div>
+                <div class="legend-item">
+                  <div class="legend-dot acoustic"></div>
+                  <span>Acoustic</span>
+                </div>
               </div>
-              <div class="legend-item">
-                <div class="legend-dot idle"></div>
-                <span>Idle</span>
-              </div>
-              <div class="legend-item">
-                <div class="legend-dot emergency"></div>
-                <span>Emergency</span>
-              </div>
+              <div class="legend-status" id="sensorCount">0 active</div>
             </div>
-            <div class="legend-status">4 HAWK units • Matrix online</div>
           </div>
         </div>
       </section>
@@ -168,7 +249,7 @@
               </div>
             </div>
             <div class="chart-content">
-              <vas id="operationsChart" width="400" height="200" aria-label="Operations chartt" role="img"></canvas>
+              <canvas id="operationsChart" width="400" height="200" aria-label="Operations chart" role="img"></canvas>
             </div>
           </div>
 
@@ -195,7 +276,7 @@
               </div>
             </div>
             <div class="chart-content">
-              <vas id="performanceChart" width="400" height="200" aria-label="Performance chartt" role="img"></canvas>
+              <canvas id="performanceChart" width="400" height="200" aria-label="Performance chart" role="img"></canvas>
             </div>
           </div>
 
@@ -272,7 +353,7 @@
 
       <div class="footer-bottom">
         <div class="footer-copy">
-          © 2025 HAWK‑VEGA Systems. Internal monitoring interface.
+          © 2025 VEGA Systems. Internal monitoring interface.
         </div>
         <div class="footer-info">
           <span class="version">Build v1.2.4</span>
@@ -330,6 +411,9 @@
     </div>
   </div>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
   <script src="script.js"></script>
 </body>
 </html>
