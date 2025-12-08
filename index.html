@@ -14,19 +14,10 @@
   <header class="header">
     <div class="container">
       <div class="header-content">
-        <!-- Left:logo -->
+        <!-- Left: logo section -->
         <div class="logo-section">
           <div class="hawk-logo">
-            <svg viewBox="0 0 64 64" class="logo-icon" aria-hidden="true">
-              <defs>
-                <linearGradient id="hawkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#10b981" />
-                  <stop offset="100%" stop-color="#06b6d4" />
-                </linearGradient>
-              </defs>
-              <path d="M32 8L8 32l24 24 24-24L32 8z" fill="url(#hawkGrad)" />
-              <circle cx="32" cy="32" r="20" fill="none" stroke="url(#hawkGrad)" stroke-width="2" stroke-dasharray="4,4" opacity="0.6" />
-            </svg>
+            <img src="https://res.cloudinary.com/drjrvslxm/image/upload/v1765173210/image_uob0el.jpg" alt="VEGA Logo" class="logo-icon">
           </div>
           <div class="brand-block">
             <div class="brand-text">VEGA</div>
@@ -34,10 +25,9 @@
           </div>
         </div>
 
-        <!-- Center: title -->
-        <div class="center-title" aria-hidden="true">
-          <h1 class="vega-title">V E G A</h1>
-          <div class="title-underline"></div>
+        <!-- Middle: Operation Center -->
+        <div class="operation-center">
+          <span class="operation-text">OPERATION CENTER</span>
         </div>
 
         <!-- Right: controls with dropdown -->
@@ -115,19 +105,6 @@
       <!-- Survivor Detection Matrix -->
       <section class="section" aria-labelledby="survivor-title">
         <div class="section-header">
-          <div class="section-logo">
-            <svg viewBox="0 0 64 64" class="section-icon" aria-hidden="true">
-              <defs>
-                <linearGradient id="sectionGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#10b981" />
-                  <stop offset="100%" stop-color="#06b6d4" />
-                </linearGradient>
-              </defs>
-              <circle cx="32" cy="20" r="8" fill="url(#sectionGrad)" />
-              <path d="M20 44c0-6.6 5.4-12 12-12s12 5.4 12 12v8H20v-8z" fill="url(#sectionGrad)" />
-              <circle cx="32" cy="32" r="20" fill="none" stroke="url(#sectionGrad)" stroke-width="2" stroke-dasharray="4,4" opacity="0.6" />
-            </svg>
-          </div>
           <div>
             <h2 class="section-title" id="survivor-title">Survivor Detection Matrix</h2>
             <p class="section-subtitle">Real‑time fusion of vital, gas, thermal and structural signals</p>
@@ -139,19 +116,6 @@
       <!-- Live Robot Tracking -->
       <section class="section" aria-labelledby="tracking-title">
         <div class="section-header">
-          <div class="section-logo">
-            <svg viewBox="0 0 64 64" class="section-icon" aria-hidden="true">
-              <defs>
-                <linearGradient id="mapGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#10b981" />
-                  <stop offset="100%" stop-color="#06b6d4" />
-                </linearGradient>
-              </defs>
-              <circle cx="32" cy="32" r="20" fill="url(#mapGrad)" opacity="0.3" />
-              <circle cx="32" cy="32" r="4" fill="url(#mapGrad)" />
-              <circle cx="32" cy="32" r="12" fill="none" stroke="url(#mapGrad)" stroke-width="2" stroke-dasharray="4,4" opacity="0.6" />
-            </svg>
-          </div>
           <div>
             <h2 class="section-title" id="tracking-title">Live Robot Tracking</h2>
             <p class="section-subtitle">Real-time location with human and sensor detection zones</p>
@@ -220,68 +184,73 @@
 
       <!-- Analytics & Performance -->
       <section class="section" aria-labelledby="analytics-title">
-        <div class="section-header section-header-inline">
-          <h2 class="section-title" id="analytics-title">Analytics &amp; Performance</h2>
-          <p class="section-subtitle">24h activity overview and system health for managers and engineers</p>
+        <div class="section-header">
+          <div>
+            <h2 class="section-title" id="analytics-title">Analytics &amp; Performance</h2>
+            <p class="section-subtitle">24h activity overview and system health for managers and engineers</p>
+          </div>
         </div>
 
         <div class="charts-grid">
-          <!-- Operations chart -->
-          <div class="chart-card">
-            <div class="chart-header">
-              <div>
-                <h3 class="chart-title">24‑hour operations</h3>
-                <p class="chart-subtitle">Rescues, threats handled, and surveillance passes</p>
+          <!-- Top row: 24-hour operations and Performance trends side by side -->
+          <div class="chart-row">
+            <!-- Operations chart -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <div>
+                  <h3 class="chart-title">24‑hour operations</h3>
+                  <p class="chart-subtitle">Rescues, threats handled, and surveillance passes</p>
+                </div>
+                <div class="chart-legend">
+                  <div class="legend-item">
+                    <div class="legend-dot rescues"></div>
+                    <span>Rescues</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot threats"></div>
+                    <span>Threats</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot surveillance"></div>
+                    <span>Surveillance</span>
+                  </div>
+                </div>
               </div>
-              <div class="chart-legend">
-                <div class="legend-item">
-                  <div class="legend-dot rescues"></div>
-                  <span>Rescues</span>
-                </div>
-                <div class="legend-item">
-                  <div class="legend-dot threats"></div>
-                  <span>Threats</span>
-                </div>
-                <div class="legend-item">
-                  <div class="legend-dot surveillance"></div>
-                  <span>Surveillance</span>
-                </div>
+              <div class="chart-content">
+                <canvas id="operationsChart" width="400" height="200" aria-label="Operations chart" role="img"></canvas>
               </div>
             </div>
-            <div class="chart-content">
-              <canvas id="operationsChart" width="400" height="200" aria-label="Operations chart" role="img"></canvas>
+
+            <!-- Performance trends -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <div>
+                  <h3 class="chart-title">Performance trends</h3>
+                  <p class="chart-subtitle">Productivity, success rate, and response time</p>
+                </div>
+                <div class="chart-legend">
+                  <div class="legend-item">
+                    <div class="legend-dot productivity"></div>
+                    <span>Productivity</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot success"></div>
+                    <span>Success rate</span>
+                  </div>
+                  <div class="legend-item">
+                    <div class="legend-dot response"></div>
+                    <span>Response time</span>
+                  </div>
+                </div>
+              </div>
+              <div class="chart-content">
+                <canvas id="performanceChart" width="400" height="200" aria-label="Performance chart" role="img"></canvas>
+              </div>
             </div>
           </div>
 
-          <!-- Performance trends -->
-          <div class="chart-card">
-            <div class="chart-header">
-              <div>
-                <h3 class="chart-title">Performance trends</h3>
-                <p class="chart-subtitle">Productivity, success rate, and response time</p>
-              </div>
-              <div class="chart-legend">
-                <div class="legend-item">
-                  <div class="legend-dot productivity"></div>
-                  <span>Productivity</span>
-                </div>
-                <div class="legend-item">
-                  <div class="legend-dot success"></div>
-                  <span>Success rate</span>
-                </div>
-                <div class="legend-item">
-                  <div class="legend-dot response"></div>
-                  <span>Response time</span>
-                </div>
-              </div>
-            </div>
-            <div class="chart-content">
-              <canvas id="performanceChart" width="400" height="200" aria-label="Performance chart" role="img"></canvas>
-            </div>
-          </div>
-
-          <!-- System performance -->
-          <div class="chart-card">
+          <!-- Bottom row: System health centered -->
+          <div class="chart-card centered-card">
             <div class="chart-header">
               <div>
                 <h3 class="chart-title">System health</h3>
@@ -302,10 +271,7 @@
       <div class="footer-content">
         <div class="footer-section">
           <div class="footer-brand">
-            <svg class="footer-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-            </svg>
-            <span class="footer-title">HAWK‑VEGA</span>
+            <span class="footer-title">VEGA</span>
           </div>
           <p class="footer-description">
             Advanced robotic operations for organization staff, project managers, supervisors, developers, and data analysts.
