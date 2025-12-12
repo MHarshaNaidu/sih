@@ -280,7 +280,7 @@ const survivorStats = [
 
 // System performance metrics
 const performanceMetrics = [
-  { name: 'HAWK network', value: 98, type: 'high' },
+  { name: ' network', value: 98, type: 'high' },
   { name: 'Command latency', value: 96, type: 'high' },
   { name: 'Video / telemetry', value: 94, type: 'medium' },
   { name: 'VEGA AI core', value: 92, type: 'good' },
@@ -709,6 +709,27 @@ function initializeAIAssistant() {
   send.addEventListener('click', handleSend);
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') handleSend();
+  });
+}
+
+// All Sensor Readings Button Functionality
+function initializeSensorReadingsButton() {
+  const sensorReadingsBtn = document.getElementById('allSensorReadingsBtn');
+  
+  if (!sensorReadingsBtn) return;
+  
+  sensorReadingsBtn.addEventListener('click', () => {
+    // Open the specified URL in a new tab
+    window.open('https://harshablog.netlify.app/', '_blank');
+    
+    // Optional: Add visual feedback
+    sensorReadingsBtn.style.transform = 'scale(0.95)';
+    sensorReadingsBtn.style.backgroundColor = 'rgba(37, 99, 235, 0.2)';
+    
+    setTimeout(() => {
+      sensorReadingsBtn.style.transform = '';
+      sensorReadingsBtn.style.backgroundColor = '';
+    }, 200);
   });
 }
 
@@ -1172,6 +1193,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   initializeAIAssistant();
   initializeDevicesDropdown();
+  initializeSensorReadingsButton(); // Initialize the new button
   
   // Show location permission modal
   setTimeout(() => {
