@@ -16,12 +16,12 @@ function showLocationPermissionModal() {
         <h3>Enable Location Services</h3>
       </div>
       <div class="modal-body">
-        <p>VEGA Command Center requires your location to provide accurate robot tracking and survivor detection mapping.</p>
-        <p>Please allow location access when prompted by your browser.</p>
+        <p>VEGA Command Center can use your location for accurate robot tracking and survivor detection mapping.</p>
+        <p>If denied, the system will use default location and show all sensor data.</p>
       </div>
       <div class="modal-footer">
         <button class="modal-button primary" id="allowLocation">Allow Location</button>
-        <button class="modal-button secondary" id="useDefault">Use Default Location</button>
+        <button class="modal-button secondary" id="useDefault">Use All Sensor Data</button>
       </div>
     </div>
   `;
@@ -150,13 +150,6 @@ function showLocationPermissionModal() {
       addStaticHumanMarkers(fallbackLat, fallbackLng);
       addStaticSensorMarkers(fallbackLat, fallbackLng);
       updateDetectionCounters();
-      
-      const locationStatus = document.getElementById('locationStatus');
-      if (locationStatus) {
-        locationStatus.textContent = 'Using default location';
-        locationStatus.style.color = '#f59e0b';
-        locationStatus.style.background = 'rgba(245, 158, 11, 0.1)';
-      }
     }, 100);
   });
 }
@@ -467,50 +460,81 @@ function drawOperationsChart() {
   const { width, height } = canvas;
   ctx.clearRect(0, 0, width, height);
 
-  const padding = 36;
-  const chartWidth = width - padding * 2;
-  const chartHeight = height - padding * 2;
-  const barWidth = chartWidth / operationsData.length;
+  const padding = {
+    top: 15,
+    right: 20,
+    bottom: 35,
+    left: 40
+  };
+  
+  const chartWidth = width - padding.left - padding.right;
+  const chartHeight = height - padding.top - padding.bottom;
+  const barWidth = (chartWidth / operationsData.length) * 0.6;
+  const barSpacing = (chartWidth / operationsData.length) * 0.4;
   const maxValue = Math.max(
     ...operationsData.flatMap((d) => [d.rescues, d.threats, d.surveillance])
   );
 
-  operationsData.forEach((d, index) => {
-    const x = padding + index * barWidth;
-    const segmentWidth = barWidth * 0.55;
+  // Draw grid
+  ctx.strokeStyle = 'rgba(148, 163, 184, 0.15)';
+  ctx.lineWidth = 1;
+  
+  for (let i = 0; i <= 5; i++) {
+    const y = padding.top + (i * chartHeight) / 5;
+    ctx.beginPath();
+    ctx.moveTo(padding.left, y);
+    ctx.lineTo(width - padding.right, y);
+    ctx.stroke();
+    
+    // Y-axis labels
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '10px ui-monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(`${Math.round(maxValue * i / 5)}`, padding.left - 8, y + 3);
+  }
 
+  // Draw bars with improved spacing
+  operationsData.forEach((d, index) => {
+    const x = padding.left + index * (barWidth + barSpacing);
+    
     const rescHeight = (d.rescues / maxValue) * chartHeight;
     const threatHeight = (d.threats / maxValue) * chartHeight;
     const survHeight = (d.surveillance / maxValue) * chartHeight;
 
-    ctx.fillStyle = '#10b981';
-    ctx.fillRect(
-      x + barWidth * 0.2,
-      padding + chartHeight - rescHeight,
-      segmentWidth,
-      rescHeight
-    );
-
-    ctx.fillStyle = '#ef4444';
-    ctx.fillRect(
-      x + barWidth * 0.2,
-      padding + chartHeight - rescHeight - threatHeight,
-      segmentWidth,
-      threatHeight
-    );
-
+    // Surveillance (bottom layer)
     ctx.fillStyle = '#06b6d4';
-    ctx.fillRect(
-      x + barWidth * 0.2,
-      padding + chartHeight - rescHeight - threatHeight - survHeight,
-      segmentWidth,
-      survHeight
-    );
+    ctx.fillRect(x, padding.top + chartHeight - survHeight, barWidth, survHeight);
+    
+    // Threats (middle layer)
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(x, padding.top + chartHeight - survHeight - threatHeight, barWidth, threatHeight);
+    
+    // Rescues (top layer)
+    ctx.fillStyle = '#10b981';
+    ctx.fillRect(x, padding.top + chartHeight - survHeight - threatHeight - rescHeight, barWidth, rescHeight);
 
-    ctx.fillStyle = '#9ca3af';
+    // X-axis labels
+    ctx.fillStyle = '#94a3b8';
     ctx.font = '11px ui-monospace';
     ctx.textAlign = 'center';
-    ctx.fillText(d.time, x + barWidth / 2, height - 10);
+    ctx.fillText(d.time, x + barWidth / 2, height - padding.bottom + 15);
+  });
+
+  // Add subtle 3D effect to bars
+  operationsData.forEach((d, index) => {
+    const x = padding.left + index * (barWidth + barSpacing);
+    
+    const rescHeight = (d.rescues / maxValue) * chartHeight;
+    const threatHeight = (d.threats / maxValue) * chartHeight;
+    const survHeight = (d.surveillance / maxValue) * chartHeight;
+    
+    // Add top highlight to bars
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x, padding.top + chartHeight - survHeight - threatHeight - rescHeight);
+    ctx.lineTo(x + barWidth, padding.top + chartHeight - survHeight - threatHeight - rescHeight);
+    ctx.stroke();
   });
 }
 
@@ -521,37 +545,122 @@ function drawPerformanceChart() {
   const { width, height } = canvas;
   ctx.clearRect(0, 0, width, height);
 
-  const padding = 36;
-  const chartWidth = width - padding * 2;
-  const chartHeight = height - padding * 2;
-  const stepX = chartWidth / (performanceData.length - 1);
+  // Optimized padding for better space utilization
+  const padding = {
+    top: 15,
+    right: 10,
+    bottom: 30,
+    left: 40
+  };
+  
+  const chartWidth = width - padding.left - padding.right;
+  const chartHeight = height - padding.top - padding.bottom;
 
-  ctx.strokeStyle = 'rgba(148,163,184,0.25)';
+  // Draw subtle grid lines
+  ctx.strokeStyle = 'rgba(148, 163, 184, 0.15)';
   ctx.lineWidth = 1;
-  for (let i = 0; i <= 4; i++) {
-    const y = padding + (i * chartHeight) / 4;
+  
+  // Horizontal grid lines
+  for (let i = 0; i <= 5; i++) {
+    const y = padding.top + (i * chartHeight) / 5;
     ctx.beginPath();
-    ctx.moveTo(padding, y);
-    ctx.lineTo(width - padding, y);
+    ctx.moveTo(padding.left, y);
+    ctx.lineTo(width - padding.right, y);
     ctx.stroke();
+    
+    // Y-axis labels
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '10px ui-monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(`${100 - i * 20}%`, padding.left - 8, y + 3);
   }
 
-  const drawLine = (key, color) => {
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 2.4;
+  // X-axis grid lines (vertical)
+  performanceData.forEach((d, index) => {
+    const x = padding.left + (index * chartWidth) / (performanceData.length - 1);
     ctx.beginPath();
-    performanceData.forEach((d, index) => {
-      const x = padding + index * stepX;
-      const y = padding + chartHeight - (d[key] / 100) * chartHeight;
-      if (index === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    });
+    ctx.moveTo(x, padding.top);
+    ctx.lineTo(x, height - padding.bottom);
     ctx.stroke();
+  });
+
+  // Draw data lines with improved clarity
+  const drawLine = (key, color, lineWidth = 2.8) => {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = lineWidth;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    
+    performanceData.forEach((d, index) => {
+      const x = padding.left + (index * chartWidth) / (performanceData.length - 1);
+      const y = padding.top + chartHeight - (d[key] / 100) * chartHeight;
+      
+      if (index === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    });
+    
+    ctx.stroke();
+    
+    // Add data points
+    performanceData.forEach((d, index) => {
+      const x = padding.left + (index * chartWidth) / (performanceData.length - 1);
+      const y = padding.top + chartHeight - (d[key] / 100) * chartHeight;
+      
+      ctx.beginPath();
+      ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    });
   };
 
-  drawLine('productivity', '#10b981');
-  drawLine('success', '#3b82f6');
-  drawLine('response', '#8b5cf6');
+  // Draw lines with distinct colors
+  drawLine('productivity', '#10b981', 2.6);
+  drawLine('success', '#3b82f6', 2.6);
+  drawLine('response', '#8b5cf6', 2.6);
+
+  // X-axis labels
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '11px ui-monospace';
+  ctx.textAlign = 'center';
+  
+  // Show only some labels for clarity
+  const showIndices = [0, Math.floor(performanceData.length / 2), performanceData.length - 1];
+  performanceData.forEach((d, index) => {
+    if (showIndices.includes(index)) {
+      const x = padding.left + (index * chartWidth) / (performanceData.length - 1);
+      ctx.fillText(d.time, x, height - padding.bottom + 15);
+    }
+  });
+
+  // Add subtle gradient under productivity line for better visibility
+  const gradient = ctx.createLinearGradient(0, padding.top, 0, height - padding.bottom);
+  gradient.addColorStop(0, 'rgba(16, 185, 129, 0.1)');
+  gradient.addColorStop(1, 'rgba(16, 185, 129, 0.01)');
+  
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  performanceData.forEach((d, index) => {
+    const x = padding.left + (index * chartWidth) / (performanceData.length - 1);
+    const y = padding.top + chartHeight - (d.productivity / 100) * chartHeight;
+    
+    if (index === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+    }
+  });
+  
+  // Complete the path to create a filled area
+  ctx.lineTo(padding.left + chartWidth, height - padding.bottom);
+  ctx.lineTo(padding.left, height - padding.bottom);
+  ctx.closePath();
+  ctx.fill();
 }
 
 function initializeAIAssistant() {
@@ -605,12 +714,14 @@ function initializeAIAssistant() {
 
 // Map initialization and management
 function initializeMaps() {
-  const locationStatus = document.getElementById('locationStatus');
+  const humanDataStatus = document.getElementById('humanDataStatus');
+  const sensorDataStatus = document.getElementById('sensorDataStatus');
   
   if (!navigator.geolocation) {
-    locationStatus.textContent = 'Geolocation not supported';
-    locationStatus.style.color = '#ef4444';
-    locationStatus.style.background = 'rgba(239, 68, 68, 0.1)';
+    // Set status badges to show all data
+    if (humanDataStatus) humanDataStatus.textContent = 'All human data';
+    if (sensorDataStatus) sensorDataStatus.textContent = 'All sensor data';
+    
     // Use default location
     const fallbackLat = 40.7128;
     const fallbackLng = -74.0060;
@@ -628,48 +739,51 @@ function initializeMaps() {
     return;
   }
 
-  locationStatus.textContent = 'Requesting location...';
-  locationStatus.style.color = '#f59e0b';
-  locationStatus.style.background = 'rgba(245, 158, 11, 0.1)';
-
   navigator.geolocation.getCurrentPosition(
     (position) => {
       const userLat = position.coords.latitude;
       const userLng = position.coords.longitude;
       userLocation = { lat: userLat, lng: userLng };
       
-      locationStatus.textContent = 'Location acquired ✓';
-      locationStatus.style.color = '#10b981';
-      locationStatus.style.background = 'rgba(16, 185, 129, 0.1)';
+      // Update status badges to show live data
+      if (humanDataStatus) {
+        humanDataStatus.textContent = 'Live data';
+        humanDataStatus.style.color = '#10b981';
+        humanDataStatus.style.background = 'rgba(16, 185, 129, 0.1)';
+      }
       
-      // Initialize human detection map
+      if (sensorDataStatus) {
+        sensorDataStatus.textContent = 'Live data';
+        sensorDataStatus.style.color = '#10b981';
+        sensorDataStatus.style.background = 'rgba(16, 185, 129, 0.1)';
+      }
+      
+      // Initialize maps
       initializeHumanMap(userLat, userLng);
-      
-      // Initialize sensor detection map
       initializeSensorMap(userLat, userLng);
-      
-      // Add user location to both maps
       addUserLocationMarker(userLat, userLng);
-      
-      // Add static human detection markers
       addStaticHumanMarkers(userLat, userLng);
-      
-      // Add static sensor markers
       addStaticSensorMarkers(userLat, userLng);
-      
-      // Update counters
       updateDetectionCounters();
-      
-      // Start dynamic human detection
       startDynamicHumanDetection();
     },
     (error) => {
       console.error('Geolocation error:', error);
-      locationStatus.textContent = 'Location denied';
-      locationStatus.style.color = '#ef4444';
-      locationStatus.style.background = 'rgba(239, 68, 68, 0.1)';
       
-      // Fallback to default location (New York)
+      // Set status badges to show all data
+      if (humanDataStatus) {
+        humanDataStatus.textContent = 'All human data';
+        humanDataStatus.style.color = '#f59e0b';
+        humanDataStatus.style.background = 'rgba(245, 158, 11, 0.1)';
+      }
+      
+      if (sensorDataStatus) {
+        sensorDataStatus.textContent = 'All sensor data';
+        sensorDataStatus.style.color = '#f59e0b';
+        sensorDataStatus.style.background = 'rgba(245, 158, 11, 0.1)';
+      }
+      
+      // Fallback to default location
       const fallbackLat = 40.7128;
       const fallbackLng = -74.0060;
       userLocation = { lat: fallbackLat, lng: fallbackLng };
@@ -682,10 +796,6 @@ function initializeMaps() {
         addStaticSensorMarkers(fallbackLat, fallbackLng);
         updateDetectionCounters();
         startDynamicHumanDetection();
-        
-        locationStatus.textContent = 'Using default location';
-        locationStatus.style.color = '#f59e0b';
-        locationStatus.style.background = 'rgba(245, 158, 11, 0.1)';
       }, 100);
     },
     {
@@ -1006,15 +1116,6 @@ function refreshUserLocation() {
       }
       
       userLocation = { lat: newLat, lng: newLng };
-      
-      // Update status
-      const locationStatus = document.getElementById('locationStatus');
-      if (locationStatus) {
-        locationStatus.textContent = 'Location updated ✓';
-        setTimeout(() => {
-          locationStatus.textContent = 'Location acquired ✓';
-        }, 2000);
-      }
     },
     (error) => {
       console.error('Error refreshing location:', error);
@@ -1076,6 +1177,12 @@ document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => {
     showLocationPermissionModal();
   }, 500);
+  
+  // Redraw charts on window resize for responsiveness
+  window.addEventListener('resize', () => {
+    drawOperationsChart();
+    drawPerformanceChart();
+  });
   
   // Set up periodic updates
   setInterval(updateStats, 60000); // Update stats every 10 minutes
