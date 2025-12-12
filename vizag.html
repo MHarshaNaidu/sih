@@ -1,1 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rescue Robot Control Center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15);
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            flex: 1;
+        }
+
+        .sensor-card {
+            background-color: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e9ecef;
+        }
+
+        .sensor-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            opacity: 0.8;
+        }
+
+        .sensor-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .sensor-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #555;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-ok {
+            background-color: rgba(52, 199, 89, 0.1);
+            color: #34c759;
+            border: 1px solid rgba(52, 199, 89, 0.3);
+        }
+
+        .status-warning {
+            background-color: rgba(255, 149, 0, 0.1);
+            color: #ff9500;
+            border: 1px solid rgba(255, 149, 0, 0.3);
+        }
+
+        .status-critical {
+            background-color: rgba(255, 59, 48, 0.1);
+            color: #ff3b30;
+            border: 1px solid rgba(255, 59, 48, 0.3);
+        }
+
+        .sensor-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .sensor-reading {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sensor-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.25rem;
+        }
+
+        .sensor-unit {
+            font-size: 0.875rem;
+            color: #7f8c8d;
+        }
+
+        .map-container {
+            width: 100%;
+            height: 180px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+            margin-top: auto;
+        }
+
+        .location-info {
+            margin-top: 0.5rem;
+        }
+
+        .location-label {
+            font-size: 0.75rem;
+            color: #7f8c8d;
+            margin-bottom: 0.25rem;
+        }
+
+        .location-coords {
+            font-size: 0.8rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .info-panel {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin: 2rem auto;
+            max-width: 1400px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e9ecef;
+        }
+
+        .info-panel h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .info-panel p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .info-card {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-card h3 {
+            color: #2c3e50;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-card p {
+            color: #666;
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem 1.5rem;
+            margin-top: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 -4px 20px rgba(102, 126, 234, 0.15);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: white;
+            font-weight: 600;
+        }
+
+        .footer-section h4 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .footer-section p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            color: white;
+            text-decoration: none;
+        }
+
+        .social-icon:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .social-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-bottom p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-bottom-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-bottom-links a:hover {
+            color: white;
+        }
+
+        .footer-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 0.5rem;
+        }
+
+        /* Static user location marker */
+        .user-marker {
+            background-color: #4CAF50;
+            border: 2px solid white;
+            border-radius: 50%;
+            width: 12px;
+            height: 12px;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+
+        @media (max-width: 1200px) {
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .navbar {
+                padding: 0.75rem 1rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .nav-links a {
+                justify-content: center;
+            }
+
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .sensor-value {
+                font-size: 2rem;
+            }
+
+            .map-container {
+                height: 150px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-bottom-links {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <ul class="nav-links">
+            <li><a href="index.html">
+                <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" />
+                    <path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" />
+                </svg>
+                Dashboard
+            </a></li>
+            <li><a href="robot-control.html">
+                <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                    <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+                </svg>
+                Robot Control
+            </a></li>
+            <li><a href="sensor-logs.html">
+                <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path fill-rule="evenodd" d="M2.25 2.25a.75.75 0 000 1.5H3v10.5a3 3 0 003 3h1.21l-1.172 3.513a.75.75 0 001.424.474l.329-.987h8.418l.33.987a.75.75 0 001.422-.474l-1.17-3.513H18a3 3 0 003-3V3.75h.75a.75.75 0 000-1.5H2.25zm6.54 15h6.42l.5 1.5H8.29l.5-1.5zm8.085-8.995a.75.75 0 10-.75-1.299 12.81 12.81 0 00-3.558 3.05L11.03 8.47a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l2.47-2.47 1.617 1.618a.75.75 0 001.146-.094 11.312 11.312 0 013.612-3.321z" clip-rule="evenodd" />
+                </svg>
+                Sensor Logs
+            </a></li>
+            <li><a href="settings.html">
+                <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path fill-rule="evenodd" d="M12 6.75a5.25 5.25 0 016.775-5.025.75.75 0 01.313 1.248l-3.32 3.319c.063.475.276.934.641 1.299.365.365.824.578 1.3.64l3.318-3.319a.75.75 0 011.248.313 5.25 5.25 0 01-5.472 6.756c-1.018-.086-1.87.1-2.309.634L7.344 21.3A3.298 3.298 0 112.7 16.657l8.684-7.151c.533-.44.72-1.291.634-2.309A5.342 5.342 0 0112 6.75zM4.117 19.125a.75.75 0 01.75-.75h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75h-.008a.75.75 0 01-.75-.75v-.008z" clip-rule="evenodd" />
+                </svg>
+                Settings
+            </a></li>
+        </ul>
+    </nav>
+
+    <div class="header">
+        <h1>Rescue Robot Control Center</h1>
+        <p>Real-time monitoring of rescue robot sensors. All sensors are operational with the robot currently deployed in Sector 7. Last updated: <span id="updateTime"></span></p>
+    </div>
+
+    <div class="dashboard-grid" id="dashboard">
+        <!-- Sensor cards will be injected here by JavaScript -->
+    </div>
+
+    <div class="info-panel">
+        <h2>Mission Status</h2>
+        <p>The rescue robot is currently deployed in Vizag (Visakhapatnam) urban area for disaster assessment. All sensors are functioning normally and providing real-time data for analysis.</p>
+        
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>Mission Duration</h3>
+                <p>3 hours 45 minutes</p>
+            </div>
+            <div class="info-card">
+                <h3>Battery Level</h3>
+                <p>78% - Good</p>
+            </div>
+            <div class="info-card">
+                <h3>Robot Status</h3>
+                <p>Active - Moving to Sector 8</p>
+            </div>
+            <div class="info-card">
+                <h3>Signal Strength</h3>
+                <p>Excellent (5 bars)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Rescue Robot Control</h3>
+                <p>Advanced disaster response system providing real-time monitoring and control of rescue robots in critical situations.</p>
+                <div class="social-links">
+                    <a href="#" class="social-icon" aria-label="Twitter">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                        </svg>
+                    </a>
+                    <a href="#" class="social-icon" aria-label="GitHub">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                    <a href="#" class="social-icon" aria-label="LinkedIn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">
+                        <svg class="footer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" />
+                        </svg>
+                        Dashboard
+                    </a></li>
+                    <li><a href="robot-control.html">
+                        <svg class="footer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M13.5 4.06c0-1.336-1.616-2.005-2.56-1.06l-4.5 4.5H4.508c-1.141 0-2.318.664-2.66 1.905A9.76 9.76 0 001.5 12c0 .898.121 1.768.35 2.595.341 1.24 1.518 1.905 2.659 1.905h1.93l4.5 4.5c.945.945 2.561.276 2.561-1.06V4.06zM17.78 9.22a.75.75 0 10-1.06 1.06L18.44 12l-1.72 1.72a.75.75 0 001.06 1.06l1.72-1.72 1.72 1.72a.75.75 0 101.06-1.06L20.56 12l1.72-1.72a.75.75 0 00-1.06-1.06l-1.72 1.72-1.72-1.72z" />
+                        </svg>
+                        Robot Control
+                    </a></li>
+                    <li><a href="sensor-logs.html">
+                        <svg class="footer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path fill-rule="evenodd" d="M2.25 2.25a.75.75 0 000 1.5H3v10.5a3 3 0 003 3h1.21l-1.172 3.513a.75.75 0 001.424.474l.329-.987h8.418l.33.987a.75.75 0 001.422-.474l-1.17-3.513H18a3 3 0 003-3V3.75h.75a.75.75 0 000-1.5H2.25zm6.04 15h6.42l.5 1.5H8.29l.5-1.5z" clip-rule="evenodd" />
+                        </svg>
+                        Sensor Logs
+                    </a></li>
+                    <li><a href="settings.html">
+                        <svg class="footer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path fill-rule="evenodd" d="M12 6.75a5.25 5.25 0 016.775-5.025.75.75 0 01.313 1.248l-3.32 3.319c.063.475.276.934.641 1.299.365.365.824.578 1.3.64l3.318-3.319a.75.75 0 011.248.313 5.25 5.25 0 01-5.472 6.756c-1.018-.086-1.87.1-2.309.634L7.344 21.3A3.298 3.298 0 112.7 16.657l8.684-7.151c.533-.44.72-1.291.634-2.309A5.342 5.342 0 0112 6.75z" clip-rule="evenodd" />
+                        </svg>
+                        Settings
+                    </a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p>
+                    <svg class="footer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path fill-rule="evenodd" d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 00-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                    </svg>
+                    Visakhapatnam, AP 530003
+                </p>
+                <p>
+                    <svg class="footer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" />
+                        <path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" />
+                    </svg>
+                    support@rescue-robot.com
+                </p>
+                <p>
+                    <svg class="footer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path fill-rule="evenodd" d="M1.5 4.5a3 3 0 013-3h1.372c.86 0 1.61.586 1.819 1.42l1.105 4.423a1.875 1.875 0 01-.694 1.955l-1.293.97c-.135.101-.164.249-.126.352a11.285 11.285 0 006.697 6.697c.103.038.25.009.352-.126l.97-1.293a1.875 1.875 0 011.955-.694l4.423 1.105c.834.209 1.42.959 1.42 1.82V19.5a3 3 0 01-3 3h-2.25C8.552 22.5 1.5 15.448 1.5 6.75V4.5z" clip-rule="evenodd" />
+                    </svg>
+                    +91 98765 43210
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h4>System Status</h4>
+                <p>
+                    <svg class="footer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-.53 14.03a.75.75 0 001.06 0l3-3a.75.75 0 10-1.06-1.06l-1.72 1.72V8.25a.75.75 0 00-1.5 0v5.69l-1.72-1.72a.75.75 0 00-1.06 1.06l3 3z" clip-rule="evenodd" />
+                    </svg>
+                    All Systems Operational
+                </p>
+                <p>
+                    <svg class="footer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+                        <path fill-rule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 010-1.113zM17.25 12a5.25 5.25 0 11-10.5 0 5.25 5.25 0 0110.5 0z" clip-rule="evenodd" />
+                    </svg>
+                    Last Update: <span id="footerUpdateTime"></span>
+                </p>
+                <p>
+                    <svg class="footer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path fill-rule="evenodd" d="M3 2.25a.75.75 0 01.75.75v.54l1.838-.46a9.75 9.75 0 016.725.738l.108.054a8.25 8.25 0 009.702-1.252.75.75 0 011.141.989A9.75 9.75 0 015.91 4.06l-.048-.018a.75.75 0 01-.156-.052 3.75 3.75 0 00-2.657-.452L3 3.75v-.54a.75.75 0 01.75-.75zm15 0a.75.75 0 01.75.75v.54l1.838-.46a9.75 9.75 0 016.725.738l.108.054a8.25 8.25 0 009.702-1.252.75.75 0 011.141.989A9.75 9.75 0 0120.91 4.06l-.048-.018a.75.75 0 01-.156-.052 3.75 3.75 0 00-2.657-.452L18 3.75v-.54a.75.75 0 01.75-.75zm-15 5.5a.75.75 0 01.75.75v.54l1.838-.46a9.75 9.75 0 016.725.738l.108.054a8.25 8.25 0 009.702-1.252.75.75 0 011.141.989A9.75 9.75 0 015.91 9.56l-.048-.018a.75.75 0 01-.156-.052 3.75 3.75 0 00-2.657-.452L3 9.75v-.54a.75.75 0 01.75-.75z" clip-rule="evenodd" />
+                    </svg>
+                    Uptime: 99.8%
+                </p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2024 Rescue Robot Control Center. All rights reserved. | Version 2.1.0</p>
+            <div class="footer-bottom-links">
+                <a href="privacy-policy.html">Privacy Policy</a>
+                <a href="terms-of-service.html">Terms of Service</a>
+                <a href="sitemap.html">Sitemap</a>
+                <a href="contact.html">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Static user location (Command Center)
+        const COMMAND_CENTER = {
+            lat: 16.5060,
+            lng: 80.6480,
+            name: "Command Center"
+        };
+
+        // Sensor data configuration with GPS coordinates
+        let sensorData = [
+            { 
+                name: 'Sound', 
+                value: '45', 
+                unit: 'dB', 
+                status: 'ok',
+                lat: 16.5062,
+                lng: 80.6480
+            },
+            { 
+                name: 'Impact/Shock', 
+                value: '0.2', 
+                unit: 'g', 
+                status: 'ok',
+                lat: 16.5065,
+                lng: 80.6485
+            },
+            { 
+                name: 'DHT11 Temperature', 
+                value: '24', 
+                unit: '°C', 
+                status: 'ok',
+                lat: 16.5068,
+                lng: 80.6490
+            },
+            { 
+                name: 'DHT11 Humidity', 
+                value: '62', 
+                unit: '%', 
+                status: 'warning',
+                lat: 16.5070,
+                lng: 80.6495
+            },
+            { 
+                name: 'Touch', 
+                value: 'No Contact', 
+                unit: '', 
+                status: 'ok',
+                lat: 16.5055,
+                lng: 80.6475
+            },
+            { 
+                name: 'Tilt', 
+                value: '5', 
+                unit: '°', 
+                status: 'ok',
+                lat: 16.5060,
+                lng: 80.6478
+            },
+            { 
+                name: 'PIR Motion', 
+                value: 'Detected', 
+                unit: '', 
+                status: 'warning',
+                lat: 16.5072,
+                lng: 80.6500
+            },
+            { 
+                name: 'Radar/Microwave', 
+                value: '3.2', 
+                unit: 'm', 
+                status: 'ok',
+                lat: 16.5058,
+                lng: 80.6482
+            },
+            { 
+                name: 'Rain', 
+                value: 'Dry', 
+                unit: '', 
+                status: 'ok',
+                lat: 16.5063,
+                lng: 80.6488
+            },
+            { 
+                name: 'MQ-2 Gas', 
+                value: '150', 
+                unit: 'ppm', 
+                status: 'ok',
+                lat: 16.5067,
+                lng: 80.6492
+            },
+            { 
+                name: 'Flame', 
+                value: 'Clear', 
+                unit: '', 
+                status: 'ok',
+                lat: 16.5052,
+                lng: 80.6470
+            },
+            { 
+                name: 'ADXL345 Accelerometer', 
+                value: '0.98', 
+                unit: 'g', 
+                status: 'ok',
+                lat: 16.5075,
+                lng: 80.6505
+            }
+        ];
+
+        let maps = {};
+
+        // Generate sensor cards
+        function createSensorCard(sensor, index) {
+            const statusClass = `status-${sensor.status}`;
+            const statusText = sensor.status.toUpperCase();
+            
+            return `
+                <div class="sensor-card">
+                    <div class="card-header">
+                        <div class="sensor-name">${sensor.name}</div>
+                        <div class="status-badge ${statusClass}">${statusText}</div>
+                    </div>
+                    <div class="sensor-content">
+                        <div class="sensor-reading">
+                            <div class="sensor-value" id="value-${index}">${sensor.value}</div>
+                            <div class="sensor-unit">${sensor.unit}</div>
+                        </div>
+                        <div>
+                            <div class="map-container" id="map-${index}"></div>
+                            <div class="location-info">
+                                <div class="location-label">Robot Location:</div>
+                                <div class="location-coords">${sensor.lat.toFixed(4)}°, ${sensor.lng.toFixed(4)}°</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initialize maps for each sensor with command center marker
+        function initMaps() {
+            sensorData.forEach((sensor, index) => {
+                const mapId = `map-${index}`;
+                
+                // Initialize Leaflet map centered between command center and sensor
+                const map = L.map(mapId, {
+                    center: [(sensor.lat + COMMAND_CENTER.lat)/2, (sensor.lng + COMMAND_CENTER.lng)/2],
+                    zoom: 17,
+                    zoomControl: false,
+                    attributionControl: false
+                });
+
+                // Add tile layer (OpenStreetMap)
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                }).addTo(map);
+
+                // Add marker for command center (static user location)
+                L.marker([COMMAND_CENTER.lat, COMMAND_CENTER.lng], {
+                    icon: L.divIcon({
+                        className: 'user-marker',
+                        html: '',
+                        iconSize: [12, 12]
+                    })
+                }).addTo(map)
+                .bindPopup(`<b>${COMMAND_CENTER.name}</b><br>${COMMAND_CENTER.lat.toFixed(4)}°, ${COMMAND_CENTER.lng.toFixed(4)}°`);
+
+                // Add marker for sensor location
+                const sensorMarker = L.marker([sensor.lat, sensor.lng]).addTo(map);
+                sensorMarker.bindPopup(`<b>${sensor.name} Sensor</b><br>${sensor.lat.toFixed(4)}°, ${sensor.lng.toFixed(4)}°`);
+
+                // Add line connecting command center to sensor
+                L.polyline([
+                    [COMMAND_CENTER.lat, COMMAND_CENTER.lng],
+                    [sensor.lat, sensor.lng]
+                ], {
+                    color: '#667eea',
+                    weight: 2,
+                    opacity: 0.6,
+                    dashArray: '5, 5'
+                }).addTo(map);
+
+                // Store map reference
+                maps[index] = map;
+
+                // Fix map rendering issue
+                setTimeout(() => {
+                    map.invalidateSize();
+                }, 100);
+            });
+        }
+
+        // Update sensor values with realistic variations
+        function updateSensorValues() {
+            sensorData.forEach((sensor, index) => {
+                const valueElement = document.getElementById(`value-${index}`);
+                
+                if (valueElement) {
+                    // Simulate realistic sensor value changes
+                    let newValue;
+                    
+                    switch(sensor.name) {
+                        case 'Sound':
+                            newValue = Math.max(35, Math.min(85, parseInt(sensor.value) + (Math.random() * 6 - 3))).toFixed(0);
+                            break;
+                        case 'Impact/Shock':
+                            newValue = Math.max(0, Math.min(1, parseFloat(sensor.value) + (Math.random() * 0.1 - 0.05))).toFixed(2);
+                            break;
+                        case 'DHT11 Temperature':
+                            newValue = Math.max(22, Math.min(28, parseInt(sensor.value) + (Math.random() * 2 - 1))).toFixed(0);
+                            break;
+                        case 'DHT11 Humidity':
+                            newValue = Math.max(55, Math.min(75, parseInt(sensor.value) + (Math.random() * 4 - 2))).toFixed(0);
+                            if (parseInt(newValue) > 70) sensorData[index].status = 'warning';
+                            else sensorData[index].status = 'ok';
+                            break;
+                        case 'Touch':
+                            newValue = Math.random() > 0.85 ? 'Contact' : 'No Contact';
+                            break;
+                        case 'Tilt':
+                            newValue = Math.max(0, Math.min(15, parseInt(sensor.value) + (Math.random() * 3 - 1.5))).toFixed(0);
+                            break;
+                        case 'PIR Motion':
+                            newValue = Math.random() > 0.65 ? 'Detected' : 'Clear';
+                            break;
+                        case 'Radar/Microwave':
+                            newValue = Math.max(1.5, Math.min(5, parseFloat(sensor.value) + (Math.random() * 0.5 - 0.25))).toFixed(1);
+                            break;
+                        case 'Rain':
+                            newValue = Math.random() > 0.9 ? 'Wet' : 'Dry';
+                            break;
+                        case 'MQ-2 Gas':
+                            newValue = Math.max(100, Math.min(350, parseInt(sensor.value) + (Math.random() * 20 - 10))).toFixed(0);
+                            if (parseInt(newValue) > 300) sensorData[index].status = 'critical';
+                            else sensorData[index].status = 'ok';
+                            break;
+                        case 'Flame':
+                            newValue = Math.random() > 0.95 ? 'Detected' : 'Clear';
+                            break;
+                        case 'ADXL345 Accelerometer':
+                            newValue = Math.max(0.95, Math.min(1.05, parseFloat(sensor.value) + (Math.random() * 0.02 - 0.01))).toFixed(2);
+                            break;
+                        default:
+                            newValue = sensor.value;
+                    }
+                    
+                    // Update value
+                    valueElement.textContent = newValue;
+                    sensorData[index].value = newValue;
+                    
+                    // Update status badge if changed
+                    const statusBadge = document.querySelector(`#value-${index}`).closest('.sensor-card').querySelector('.status-badge');
+                    if (statusBadge) {
+                        const statusClass = `status-${sensorData[index].status}`;
+                        const statusText = sensorData[index].status.toUpperCase();
+                        statusBadge.className = `status-badge ${statusClass}`;
+                        statusBadge.textContent = statusText;
+                    }
+                }
+            });
+            
+            // Update timestamps
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const dateString = now.toLocaleDateString();
+            
+            document.getElementById('updateTime').textContent = timeString;
+            document.getElementById('footerUpdateTime').textContent = `${dateString} ${timeString}`;
+        }
+
+        // Initialize dashboard
+        function initDashboard() {
+            const dashboard = document.getElementById('dashboard');
+            let html = '';
+            
+            // Add sensor cards
+            sensorData.forEach((sensor, index) => {
+                html += createSensorCard(sensor, index);
+            });
+            
+            dashboard.innerHTML = html;
+            
+            // Initialize maps after DOM is ready
+            setTimeout(() => {
+                initMaps();
+            }, 100);
+            
+            // Update timestamps initially
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const dateString = now.toLocaleDateString();
+            
+            document.getElementById('updateTime').textContent = timeString;
+            document.getElementById('footerUpdateTime').textContent = `${dateString} ${timeString}`;
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initDashboard();
+            
+            // Start updating sensor values every 3 seconds
+            setInterval(updateSensorValues, 3000);
+        });
+    </script>
+</body>
+</html>
