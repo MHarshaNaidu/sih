@@ -447,6 +447,37 @@ body::after {
   margin-top: 0.15rem;
 }
 
+/* All Sensor Readings Button */
+.sensor-readings-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(37, 99, 235, 0.15);
+  background: rgba(37, 99, 235, 0.08);
+  color: var(--accent-blue);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  margin-top: 0.3rem;
+}
+
+.sensor-readings-button:hover {
+  background: rgba(37, 99, 235, 0.15);
+  border-color: rgba(37, 99, 235, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+}
+
+.sensor-readings-button svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  stroke-width: 2;
+}
+
 .map-display {
   height: 24rem;
   background: linear-gradient(180deg, rgba(255,255,255,0.6), var(--bg-panel));
@@ -1440,9 +1471,15 @@ body::after {
   }
   
   .map-panel-status {
-    flex-direction: row;
+    flex-direction: column;
+    align-items: flex-start;
     width: 100%;
-    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  
+  .sensor-readings-button {
+    align-self: flex-start;
+    margin-top: 0.5rem;
   }
   
   .footer-content {
@@ -1531,8 +1568,9 @@ body::after {
     gap: 0.5rem;
   }
   
-  .map-panel-status .live-indicator {
-    align-self: flex-start;
+  .sensor-readings-button {
+    width: 100%;
+    justify-content: center;
   }
   
   .dropdown-menu {
